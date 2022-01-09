@@ -1,5 +1,5 @@
 Webpack (imports/exports)
-	Babel
+	Babel (deprecated, insted you need to install core-js, regenerator-runtime modules)
 	Scss
 	Eslint
 	2 Modes
@@ -8,7 +8,6 @@ Webpack (imports/exports)
 		- Prod
 			Minified Code
 Git
-
 	Production
 		2.0.0
 		0 ---------------
