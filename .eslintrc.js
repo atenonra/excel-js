@@ -10,7 +10,8 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
-    semi: 'off'
-  },
-  commaDangle: ['never']
+    // eslint-disable-next-line quote-props
+    semi: 'off',
+    'comma-dangle': ['error', 'never']
+  }
 }
