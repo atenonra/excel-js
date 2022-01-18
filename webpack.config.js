@@ -8,14 +8,14 @@ module.exports = (env, argv) => {
   const isProd = argv.mode === 'production'
   const isDev = !isProd
 
-  const fileName = (ext) =>
-    isProd ? `[name].[contenthash].bundle.${ext}` : `[name].bundle.${ext}`
+  const fileName = ext => (isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`)
 
   const plugins = () => {
     const base = [
       new HtmlWebpackPlugin({
         template: './index.html'
       }),
+
       new CopyPlugin({
         patterns: [
           {
@@ -24,6 +24,7 @@ module.exports = (env, argv) => {
           }
         ]
       }),
+
       new MiniCssExtractPlugin({
         filename: fileName('css')
       })
@@ -42,24 +43,22 @@ module.exports = (env, argv) => {
       extensions: ['.js'],
       alias: {
         '@': path.resolve(__dirname, 'src'),
-        '@core': path.resolve(__dirname, 'src', 'core')
+        '@core': path.resolve(__dirname, 'src/core')
       }
     },
     entry: {
       main: ['core-js/stable', 'regenerator-runtime/runtime', './index.js']
     },
-    devtool: 'inline-source-map',
-    devServer: {
-      port: '3000',
-      open: true,
-      static: './dist',
-      hot: true,
-      watchFiles: './'
-    },
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: fileName('js'),
       clean: true
+    },
+    devtool: 'inline-source-map',
+    devServer: {
+      port: 3000,
+      open: true,
+      hot: isDev
     },
     plugins: plugins(),
     module: {
@@ -67,6 +66,18 @@ module.exports = (env, argv) => {
         {
           test: /\.s[ac]ss$/i,
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: ['@babel/preset-env']
+              }
+            }
+          ]
         }
       ]
     }
